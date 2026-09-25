@@ -321,11 +321,11 @@ A diferença de fundo: no Power BI essas regras moram **uma vez** numa medida DA
 
 | Dashboard | Dataset principal | KPIs | Gráficos e tabela | Filtros |
 |---|---|---|---|---|
-| **Diretoria Comercial** | `vendas_detalhadas` + "Top 10 produtos" com parâmetros | Receita, vendas, ticket médio, itens | Receita por dia e canal, por canal, média por dia da semana, por hora, por categoria; top 10 produtos | Período (UTC) e canal |
-| **Diretoria de Customer Success** | `clientes_segmentacao` | Clientes, VIP, % da receita VIP, ticket médio | Clientes e receita por segmento, receita por região; ranking de clientes | Segmento e região |
-| **Diretoria de Pricing** | `precos_competitividade` | Monitorados, mais caros que todos (confirmados), receita deles, suspeitos a conferir | Classificação confirmados × a confirmar; diferença média por categoria sem suspeitos; tabela "Onde agir" | Categoria e classificação |
+| **Dashboard Comercial** | `vendas_detalhadas` + "Top 10 produtos" com parâmetros | Receita, vendas, ticket médio, itens | Receita por dia e canal, por canal, média por dia da semana, por hora, por categoria; top 10 produtos | Período (UTC) e canal |
+| **Dashboard de Customer Success** | `clientes_segmentacao` | Clientes, VIP, % da receita VIP, ticket médio | Clientes e receita por segmento, receita por região; ranking de clientes | Segmento e região |
+| **Dashboard de Pricing** | `precos_competitividade` | Monitorados, mais caros que todos (confirmados), receita deles, suspeitos a conferir | Classificação confirmados × a confirmar; diferença média por categoria sem suspeitos; tabela "Onde agir" | Categoria e classificação |
 
-Arquivos: `ecommerce/src/dashboards/<nome>.lvdash.json` e `ecommerce/resources/<nome>.dashboard.yml`. No workspace: menu **Dashboards**, `[dev <seu_usuario>] Diretoria ...`. O arquivo publicado fica em `.bundle/ecommerce/dev/resources/`. Os 3 publicados são idênticos aos JSON do repositório [V].
+Arquivos: `ecommerce/src/dashboards/<nome>.lvdash.json` e `ecommerce/resources/<nome>.dashboard.yml`. No workspace: menu **Dashboards**, `[dev <seu_usuario>] Dashboard ...`. O arquivo publicado fica em `.bundle/ecommerce/dev/resources/`. Os 3 publicados são idênticos aos JSON do repositório [V].
 
 **Decisões e porquês**
 
@@ -604,9 +604,9 @@ A revisão também **pegou erros antes do deploy**: o `bundle validate -o json` 
 | Métricas das expectations | Event log | — | Pipeline › tabela › aba *Data quality*; SQL `event_log(TABLE(ecommerce.silver.vendas))` |
 | Testes de qualidade (22) | Notebook | `ecommerce/src/ecommerce_etl/testes/testes_qualidade.py` | `.bundle/ecommerce/dev/files/src/ecommerce_etl/testes/testes_qualidade` |
 | Job | Job (YAML) | `ecommerce/resources/pipeline_ecommerce.job.yml` | Jobs & Pipelines › `[dev <seu_usuario>] Pipeline E-commerce` |
-| Dashboard Comercial | AI/BI (JSON + YAML) | `ecommerce/src/dashboards/diretoria_comercial.lvdash.json` · `ecommerce/resources/diretoria_comercial.dashboard.yml` | Dashboards › `[dev <seu_usuario>] Diretoria Comercial` |
-| Dashboard Customer Success | AI/BI (JSON + YAML) | `ecommerce/src/dashboards/diretoria_customer_success.lvdash.json` · `resources/diretoria_customer_success.dashboard.yml` | Dashboards › `[dev <seu_usuario>] Diretoria de Customer Success` |
-| Dashboard Pricing | AI/BI (JSON + YAML) | `ecommerce/src/dashboards/diretoria_pricing.lvdash.json` · `resources/diretoria_pricing.dashboard.yml` | Dashboards › `[dev <seu_usuario>] Diretoria de Pricing` |
+| Dashboard Comercial | AI/BI (JSON + YAML) | `ecommerce/src/dashboards/diretoria_comercial.lvdash.json` · `ecommerce/resources/diretoria_comercial.dashboard.yml` | Dashboards › `[dev <seu_usuario>] Dashboard Comercial` |
+| Dashboard de Customer Success | AI/BI (JSON + YAML) | `ecommerce/src/dashboards/diretoria_customer_success.lvdash.json` · `resources/diretoria_customer_success.dashboard.yml` | Dashboards › `[dev <seu_usuario>] Dashboard de Customer Success` |
+| Dashboard de Pricing | AI/BI (JSON + YAML) | `ecommerce/src/dashboards/diretoria_pricing.lvdash.json` · `resources/diretoria_pricing.dashboard.yml` | Dashboards › `[dev <seu_usuario>] Dashboard de Pricing` |
 | Placar de qualidade | MV (SQL) | `ecommerce/src/ecommerce_etl/transformations/gold/qualidade_dados.sql` | `ecommerce.gold.qualidade_dados` |
 | Genie space | Serialized space dentro do YAML | `ecommerce/resources/diretoria.genie_space.yml` | Genie › `[dev <seu_usuario>] Diretoria E-commerce` (em `.bundle/ecommerce/dev`) |
 | Histórico de testes do Genie | Conversas | — | Genie space › histórico (6 rodadas) |

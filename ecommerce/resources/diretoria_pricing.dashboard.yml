@@ -1,10 +1,10 @@
-# Dashboard AI/BI "Diretoria de Pricing" (gold). As consultas usam só o nome da tabela;
+# Dashboard AI/BI "Dashboard de Pricing" (gold). As consultas usam só o nome da tabela;
 # catálogo e schema vêm de dataset_catalog/dataset_schema, para funcionar em dev e prod.
 
 resources:
   dashboards:
     diretoria_pricing:
-      display_name: "Diretoria de Pricing"
+      display_name: "Dashboard de Pricing"
       file_path: ../src/dashboards/diretoria_pricing.lvdash.json
       warehouse_id: ${var.warehouse_id}
       dataset_catalog: ${var.catalog}

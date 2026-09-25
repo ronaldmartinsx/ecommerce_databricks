@@ -83,8 +83,8 @@ flowchart LR
 
     subgraph consumo["Consumo"]
         D1["Dashboard Comercial"]
-        D2["Dashboard Customer Success"]
-        D3["Dashboard Pricing"]
+        D2["Dashboard de Customer Success"]
+        D3["Dashboard de Pricing"]
         GEN["Genie space Diretoria E-commerce"]
     end
 
@@ -138,7 +138,7 @@ flowchart LR
 | G4 | gold: qualidade_dados | Job / pipeline / gold |
 | TST | Notebook `testes_qualidade` (tarefa 3) | Job |
 | WH | SQL Warehouse "Serverless Starter Warehouse" | Databricks |
-| D1, D2, D3 | Dashboards Comercial, Customer Success, Pricing | Consumo |
+| D1, D2, D3 | Dashboard Comercial, Dashboard de Customer Success, Dashboard de Pricing | Consumo |
 | GEN | Genie space "Diretoria E-commerce" | Consumo |
 | DEV | Git + Asset Bundle + Databricks CLI | Desenvolvimento |
 

@@ -2,6 +2,8 @@
 
 Pipeline de dados de ponta a ponta para um e-commerce brasileiro: ingestão de um data lake S3, arquitetura medalhão no Unity Catalog com qualidade de dados declarada, testes automáticos, um dashboard por diretoria e um agente do **Genie** que responde em português. Tudo descrito como código num **Databricks Asset Bundle**, com ambientes `dev` e `prod`, 100% serverless.
 
+![Dashboard Comercial: receita, vendas, ticket médio e itens do período, receita por dia e canal, por dia da semana, por hora e por categoria](docs/img/dashboard_comercial.png)
+
 ---
 
 ## O problema
@@ -46,6 +48,14 @@ flowchart LR
 
 Detalhes, diagrama completo e 12 decisões registradas em [docs/ARQUITETURA.md](docs/ARQUITETURA.md).
 
+**O pipeline no Databricks.** Ninguém escreveu a ordem das tabelas: o pipeline deduz as dependências a partir do código de cada uma (bronze à esquerda, silver no meio, golds à direita).
+
+![Grafo do pipeline ecommerce_etl: 5 tabelas bronze, 4 silver e 6 gold](docs/img/grafo_pipeline.png)
+
+**O Job em execução.** Ingestão, pipeline e testes, em sequência; a tarefa seguinte só começa se a anterior terminar bem.
+
+![Execuções do Job Pipeline E-commerce com as tarefas ingestao_bronze, atualizar_pipeline e testes_qualidade](docs/img/job_execucao.png)
+
 ## Stack
 
 Databricks (Unity Catalog, Delta Lake, Lakeflow Declarative Pipelines, Lakeflow Jobs, AI/BI Dashboards, AI/BI Genie, serverless) · PySpark e Spark SQL · Python (`boto3`, `pandas`, `requests`) · Databricks Asset Bundles e Databricks CLI · Git · Claude Code com o plugin Databricks e o MCP de SQL gerenciado.
@@ -62,6 +72,12 @@ Databricks (Unity Catalog, Delta Lake, Lakeflow Declarative Pipelines, Lakeflow 
 
 O caso do Tênis mostra por que "marcar e não apagar" importa: a categoria aparece **+100% acima do mercado**, mas o concorrente cobra exatamente metade do nosso preço, o que indica erro de coleta. Sem os suspeitos, a categoria mais cara é Beleza, com +1,24%. A ação é conferir a coleta, não baixar o preço.
 
+![Dashboard de Pricing: 215 produtos monitorados, 20 mais caros que todos confirmados, 15 com preço suspeito a conferir, e a tabela de onde agir](docs/img/dashboard_pricing.png)
+
+O Dashboard de Customer Success mostra a carteira por segmento e região e o ranking de clientes:
+
+![Dashboard de Customer Success: 50 clientes, 10 VIP com 27,0% da receita, receita por segmento e por região](docs/img/dashboard_cs.png)
+
 **Placar de qualidade** (`gold.qualidade_dados`): 20 vendas de produto não cadastrado (R$ 4.240,01, mantidas na receita), 5 vendas antes do cadastro do produto, 55 preços de concorrente suspeitos, 12 produtos com marca diferente da citada no nome, 11 nomes de cliente com pronome de tratamento corrigidos.
 
 **Genie:** aceitação com 12 perguntas de resposta conhecida, feitas pela API de conversa e comparadas com SQL direto na gold. Só conta acerto se o texto trouxer todos os números.
@@ -73,6 +89,10 @@ O caso do Tênis mostra por que "marcar e não apagar" importa: a categoria apar
 | 3–4 | 10/10 | 2/2 | — |
 | 5 | 10/10 | 2/2 | Com o placar de qualidade no space, inventou uma regra própria (183 no lugar de 12) → SQL de exemplo e *entity matching* |
 | 6 | 10/10 | 2/2 | Também 6/6 perguntas da tela inicial e 2/2 de qualidade |
+
+Uma das perguntas de aceitação, respondida pelo Genie com o número total, a separação entre confirmados e suspeitos e a categoria dos suspeitos:
+
+![Genie respondendo quantos produtos estão mais caros que todos os concorrentes: 35, sendo 20 confirmados e 15 a confirmar, todos de Tênis](docs/img/genie_conversa.png)
 
 ## Decisões principais
 
@@ -123,7 +143,8 @@ databricks bundle summary -t dev -p <perfil>    # links do Job, dashboards e Gen
 ├── LICENSE
 ├── docs/
 │   ├── ARQUITETURA.md         ← componentes, fluxo, diagrama, ADRs, stack
-│   └── GUIA_DE_ESTUDO.md      ← cada camada explicada, com ponte para Microsoft Fabric / Power BI
+│   ├── GUIA_DE_ESTUDO.md      ← cada camada explicada, com ponte para Microsoft Fabric / Power BI
+│   └── img/                   ← prints dos dashboards, do Genie, do pipeline e do Job
 ├── ecommerce/                 ← o Databricks Asset Bundle (ver ecommerce/README.md)
 │   ├── databricks.yml
 │   ├── resources/             ← Job, pipeline, dashboards, Genie

@@ -60,7 +60,7 @@
             "name": "titulo",
             "multilineTextboxSpec": {
               "lines": [
-                "# Diretoria de Customer Success\n",
+                "# Dashboard de Customer Success\n",
                 "\n",
                 "Quem são os melhores clientes e onde estão · Período: 13/12/2025 a 11/01/2026 · Fonte: gold.clientes_segmentacao · VIP a partir de R$ 22.000, TOP_TIER de R$ 17.000 a R$ 21.999,99, REGULAR abaixo disso"
               ]

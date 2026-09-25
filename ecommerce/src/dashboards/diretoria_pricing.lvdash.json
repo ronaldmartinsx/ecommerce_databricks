@@ -79,7 +79,7 @@
             "name": "titulo",
             "multilineTextboxSpec": {
               "lines": [
-                "# Diretoria de Pricing\n",
+                "# Dashboard de Pricing\n",
                 "\n",
                 "Estamos mais caros que a concorrência (Mercado Livre, Amazon, Magalu e Shopee), e em quais produtos agir? · Período: 13/12/2025 a 11/01/2026 · Fonte: gold.precos_competitividade · **Preço suspeito** = algum concorrente abaixo de 60% do nosso preço (erro de coleta ou promoção): confira antes de reagir"
               ]

@@ -116,7 +116,7 @@
             "name": "titulo",
             "multilineTextboxSpec": {
               "lines": [
-                "# Diretoria Comercial\n",
+                "# Dashboard Comercial\n",
                 "\n",
                 "Quanto vendemos, quando, em qual canal e com quais produtos · Período: 13/12/2025 a 11/01/2026 · Fonte: gold.vendas_detalhadas · Datas e horas em UTC"
               ]
@@ -261,10 +261,6 @@
                     {
                       "name": "measure(receita_total)",
                       "expression": "MEASURE(`receita_total`)"
-                    },
-                    {
-                      "name": "daily(data)",
-                      "expression": "DATE_TRUNC(\"DAY\", `data`)"
                     }
                   ],
                   "disaggregated": false
@@ -286,9 +282,6 @@
                       "places": 2
                     }
                   }
-                },
-                "period": {
-                  "fieldName": "daily(data)"
                 }
               },
               "frame": {
@@ -316,10 +309,6 @@
                     {
                       "name": "measure(vendas)",
                       "expression": "MEASURE(`vendas`)"
-                    },
-                    {
-                      "name": "daily(data)",
-                      "expression": "DATE_TRUNC(\"DAY\", `data`)"
                     }
                   ],
                   "disaggregated": false
@@ -340,9 +329,6 @@
                       "places": 0
                     }
                   }
-                },
-                "period": {
-                  "fieldName": "daily(data)"
                 }
               },
               "frame": {
@@ -370,10 +356,6 @@
                     {
                       "name": "measure(ticket_medio)",
                       "expression": "MEASURE(`ticket_medio`)"
-                    },
-                    {
-                      "name": "daily(data)",
-                      "expression": "DATE_TRUNC(\"DAY\", `data`)"
                     }
                   ],
                   "disaggregated": false
@@ -395,9 +377,6 @@
                       "places": 2
                     }
                   }
-                },
-                "period": {
-                  "fieldName": "daily(data)"
                 }
               },
               "frame": {
@@ -427,10 +406,6 @@
                     {
                       "name": "measure(itens_vendidos)",
                       "expression": "MEASURE(`itens_vendidos`)"
-                    },
-                    {
-                      "name": "daily(data)",
-                      "expression": "DATE_TRUNC(\"DAY\", `data`)"
                     }
                   ],
                   "disaggregated": false
@@ -451,9 +426,6 @@
                       "places": 0
                     }
                   }
-                },
-                "period": {
-                  "fieldName": "daily(data)"
                 }
               },
               "frame": {
