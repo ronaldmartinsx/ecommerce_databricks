@@ -1,0 +1,16 @@
+# Pipeline do e-commerce: bronze -> silver (Python) -> gold (SQL).
+# Todas as tabelas são materialized views com leitura batch, porque a bronze é
+# sobrescrita a cada ingestão (streaming table quebraria com reescritas).
+
+resources:
+  pipelines:
+    ecommerce_etl:
+      name: ecommerce_etl
+      catalog: ${var.catalog}
+      schema: ${var.schema}
+      serverless: true
+      root_path: "../src/ecommerce_etl"
+
+      libraries:
+        - glob:
+            include: ../src/ecommerce_etl/transformations/**

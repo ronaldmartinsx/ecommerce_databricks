@@ -1,0 +1,22 @@
+# macOS
+.DS_Store
+
+# Estado local da Databricks CLI / bundles
+.databricks/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Segredos e configuração local: nunca versionar
+.env
+.env.*
+*.databrickscfg
+*.pem
+# O .mcp.json real tem o host do seu workspace e um caminho local; versionamos só o .mcp.json.example
+.mcp.json
+.claude/settings.local.json
+
+# Rascunhos
+scratch/

@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "databricks-sql": {
+      "type": "http",
+      "url": "https://<seu-workspace>.cloud.databricks.com/api/2.0/mcp/sql",
+      "headersHelper": "<caminho-absoluto-do-repositorio>/.claude/databricks-mcp-headers.sh"
+    }
+  }
+}

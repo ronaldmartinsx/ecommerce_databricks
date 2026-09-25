@@ -1,0 +1,11 @@
+# Dashboard AI/BI "Diretoria Comercial" (gold). As consultas usam só o nome da tabela;
+# catálogo e schema vêm de dataset_catalog/dataset_schema, para funcionar em dev e prod.
+
+resources:
+  dashboards:
+    diretoria_comercial:
+      display_name: "Diretoria Comercial"
+      file_path: ../src/dashboards/diretoria_comercial.lvdash.json
+      warehouse_id: ${var.warehouse_id}
+      dataset_catalog: ${var.catalog}
+      dataset_schema: gold

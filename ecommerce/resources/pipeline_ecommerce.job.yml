@@ -1,0 +1,41 @@
+# Job "Pipeline E-commerce": ingestão da bronze → pipeline (silver e gold) → testes de qualidade.
+# Cada tarefa só começa se a anterior terminar bem. Se algum teste achar problema, o Job fica vermelho.
+# O agendamento diário vale em prod; no target dev (mode: development) ele fica pausado automaticamente.
+
+resources:
+  jobs:
+    pipeline_ecommerce:
+      name: Pipeline E-commerce
+
+      schedule:
+        quartz_cron_expression: "0 0 6 * * ?"
+        timezone_id: America/Sao_Paulo
+        # Sem pause_status explícito: o modo development pausa em dev, e em prod o Job fica ativo.
+
+      email_notifications:
+        on_failure:
+          - ${workspace.current_user.userName}
+
+      # Parâmetro de Job: chega como widget "catalogo" em todos os notebooks.
+      parameters:
+        - name: catalogo
+          default: ${var.catalog}
+
+      tasks:
+        - task_key: ingestao_bronze
+          notebook_task:
+            notebook_path: ../src/ingestao/ingestao_bronze.py
+            base_parameters:
+              secret_scope: ${var.secret_scope}
+
+        - task_key: atualizar_pipeline
+          depends_on:
+            - task_key: ingestao_bronze
+          pipeline_task:
+            pipeline_id: ${resources.pipelines.ecommerce_etl.id}
+
+        - task_key: testes_qualidade
+          depends_on:
+            - task_key: atualizar_pipeline
+          notebook_task:
+            notebook_path: ../src/ecommerce_etl/testes/testes_qualidade.py

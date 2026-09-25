@@ -1,0 +1,47 @@
+# Databricks Asset Bundle (Declarative Automation Bundle) do projeto e-commerce:
+# ingestão, pipeline silver/gold, testes, Job, 3 dashboards e o Genie space.
+#
+#   databricks bundle validate --strict -t dev -p <perfil>
+#   databricks bundle deploy -t dev -p <perfil>
+#   databricks bundle run pipeline_ecommerce -t dev -p <perfil>
+#
+# O host do workspace vem do perfil da CLI (-p), e não deste arquivo.
+bundle:
+  name: ecommerce
+  uuid: d2079bbc-db48-40a5-bc3e-f26def20497b
+
+include:
+  - resources/*.yml
+
+variables:
+  catalog:
+    description: Catálogo do Unity Catalog com os schemas bronze, silver e gold. Um por ambiente.
+  schema:
+    description: Schema padrão do pipeline; as golds são publicadas como gold.<tabela>.
+    default: silver
+  warehouse_id:
+    description: SQL warehouse dos dashboards e do Genie space, buscado pelo nome.
+    lookup:
+      warehouse: "Serverless Starter Warehouse"
+  secret_scope:
+    description: Secret scope com s3_endpoint, s3_access_key e s3_secret_key do Storage do Supabase.
+    default: ecommerce
+
+targets:
+  # Recursos com prefixo "[dev <usuario>]" e agendamento pausado.
+  dev:
+    mode: development
+    default: true
+    variables:
+      catalog: ecommerce
+
+  # Nomes limpos e Job agendado. Catálogo próprio, para dev e prod não disputarem as mesmas tabelas.
+  prod:
+    mode: production
+    workspace:
+      root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/${bundle.target}
+    variables:
+      catalog: ecommerce_prod
+    permissions:
+      - user_name: ${workspace.current_user.userName}
+        level: CAN_MANAGE
