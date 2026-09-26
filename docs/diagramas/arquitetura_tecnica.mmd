@@ -1,0 +1,91 @@
+flowchart LR
+    subgraph fontes["🌐 Fontes externas"]
+        direction TB
+        SUP["`☁️ **Supabase Storage**
+4 arquivos Parquet (S3)`"]
+        IBGE["`🗺️ **API do IBGE**
+27 UFs e regiões`"]
+    end
+
+    subgraph ingestao["⚙️ Ingestão · tarefa 1 do Job"]
+        JOB(["`⏰ **Lakeflow Job**
+todo dia às 6h`"])
+        ING["`📓 **Notebook de ingestão**
+boto3 + pandas`"]
+        SEC["`🔑 **Secret scope**
+endpoint e chaves`"]
+    end
+
+    subgraph bronze["🥉 Bronze · dado como chegou"]
+        BR["`**5 tabelas Delta**
+vendas · produtos · clientes
+preços de concorrentes · UFs do IBGE`"]
+    end
+
+    subgraph silver["🥈 Silver · tarefa 2 (pipeline)"]
+        SI["`**4 materialized views**
+PySpark + 19 expectations
+problemas marcados, nunca apagados`"]
+    end
+
+    subgraph gold["🥇 Gold · tarefa 2 (pipeline)"]
+        direction TB
+        GO["`**6 materialized views**
+vendas · clientes · preços
+placar de qualidade`"]
+        TST["`✅ **22 testes**
+tarefa 3 do Job`"]
+    end
+
+    subgraph consumo["📊 Consumo"]
+        direction TB
+        WH["`⚡ **SQL Warehouse**
+serverless`"]
+        DASH["`📈 **3 dashboards**
+Comercial · CS · Pricing`"]
+        GEN["`🧞 **Genie**
+perguntas em português`"]
+    end
+
+    DIR(["`👔 **Diretoria**
+Comercial · CS · Pricing`"])
+
+    SUP --> ING
+    IBGE --> ING
+    SEC -.-> ING
+    JOB -.-> ING
+    ING --> BR
+    BR --> SI
+    SI --> GO
+    GO -.-> TST
+    GO --> WH
+    WH --> DASH
+    WH --> GEN
+    DASH -.->|Ask Genie| GEN
+    DASH --> DIR
+    GEN --> DIR
+
+    classDef fonte fill:#F1F3F5,stroke:#868E96,color:#343A40
+    classDef processo fill:#E7F5FF,stroke:#1C7ED6,color:#1864AB
+    classDef bronzeN fill:#FFE8CC,stroke:#D9480F,color:#862E0A
+    classDef silverN fill:#E9ECEF,stroke:#495057,color:#212529
+    classDef goldN fill:#FFF3BF,stroke:#E67700,color:#7A4B00
+    classDef teste fill:#EBFBEE,stroke:#2F9E44,color:#2B8A3E
+    classDef consumoN fill:#F3F0FF,stroke:#7048E8,color:#5F3DC4
+    classDef pessoa fill:#FFF0F6,stroke:#C2255C,color:#A61E4D
+
+    class SUP,IBGE fonte
+    class JOB,ING,SEC processo
+    class BR bronzeN
+    class SI silverN
+    class GO goldN
+    class TST teste
+    class WH,DASH,GEN consumoN
+    class DIR pessoa
+
+    style fontes fill:#F8F9FA,stroke:#ADB5BD
+    style ingestao fill:#F4FAFF,stroke:#74C0FC
+    style bronze fill:#FFF4E6,stroke:#FFA94D
+    style silver fill:#F8F9FA,stroke:#868E96
+    style gold fill:#FFF9DB,stroke:#FCC419
+    style consumo fill:#F8F7FF,stroke:#B197FC

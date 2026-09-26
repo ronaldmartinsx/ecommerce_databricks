@@ -1,0 +1,45 @@
+flowchart LR
+    ORIGEM["`🏪 **Dados da loja**
+vendas, clientes, produtos
+e preços da concorrência`"]
+
+    COLETA["`🚚 **1. Coleta**
+todo dia, sozinha`"]
+
+    ORGANIZA["`🧹 **2. Organização**
+arruma e confere os dados
+sem apagar nenhuma venda`"]
+
+    CONFERE["`✅ **3. Conferência**
+22 verificações automáticas
+avisam se algo não bater`"]
+
+    subgraph respostas["💡 4. Respostas prontas"]
+        direction TB
+        PAINEIS["`📊 **Painéis**
+um para cada diretoria`"]
+        GENIE["`💬 **Assistente de IA**
+pergunte em português`"]
+    end
+
+    DIRETORIA(["`👔 **Diretoria**
+Comercial · Clientes · Preços`"])
+
+    ORIGEM --> COLETA --> ORGANIZA --> CONFERE --> PAINEIS
+    CONFERE --> GENIE
+    PAINEIS --> DIRETORIA
+    GENIE --> DIRETORIA
+
+    classDef fonte fill:#F1F3F5,stroke:#868E96,color:#343A40
+    classDef etapa fill:#E7F5FF,stroke:#1C7ED6,color:#1864AB
+    classDef ok fill:#EBFBEE,stroke:#2F9E44,color:#2B8A3E
+    classDef resposta fill:#F3F0FF,stroke:#7048E8,color:#5F3DC4
+    classDef pessoa fill:#FFF0F6,stroke:#C2255C,color:#A61E4D
+
+    class ORIGEM fonte
+    class COLETA,ORGANIZA etapa
+    class CONFERE ok
+    class PAINEIS,GENIE resposta
+    class DIRETORIA pessoa
+
+    style respostas fill:#F8F7FF,stroke:#B197FC

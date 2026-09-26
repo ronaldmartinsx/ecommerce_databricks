@@ -43,83 +43,115 @@ Documento de arquitetura da solução implantada no target `dev` e preparada par
 
 ## 3. Diagrama
 
-Diagrama para importar no Excalidraw (*Mermaid to Excalidraw*). Linha tracejada = ligação de configuração, validação ou deploy.
+Os diagramas ficam em [docs/diagramas/](./diagramas/), em duas versões: técnica e para o negócio. Cada uma está em `.excalidraw` (editável, com os ícones oficiais do Databricks), `.png` e Mermaid. O [README da pasta](./diagramas/README.md) explica como abrir, editar e reexportar.
+
+![Arquitetura técnica](./diagramas/arquitetura_tecnica.png)
+
+**Versão para o negócio**, com as mesmas etapas em linguagem de quem usa o resultado:
+
+![Arquitetura para o negócio](./diagramas/arquitetura_negocio.png)
+
+**Mermaid da versão técnica**, o mesmo conteúdo de [arquitetura_tecnica.mmd](./diagramas/arquitetura_tecnica.mmd). Ele foi escrito para o importador do Excalidraw (**Mais ferramentas → Mermaid para Excalidraw**): usa emoji como ícone, cores por camada e quebra de linha em rótulo markdown, porque `<br/>` não funciona no conversor.
 
 ```mermaid
 flowchart LR
-    subgraph fontes["Fontes externas"]
-        SUP["Supabase Storage (S3) - Parquet"]
-        IBGE["API do IBGE - JSON"]
+    subgraph fontes["🌐 Fontes externas"]
+        direction TB
+        SUP["`☁️ **Supabase Storage**
+4 arquivos Parquet (S3)`"]
+        IBGE["`🗺️ **API do IBGE**
+27 UFs e regiões`"]
     end
 
-    subgraph dbx["Databricks - Unity Catalog - catálogo por ambiente"]
-        SEC["Secret scope ecommerce"]
-
-        subgraph job["Job Pipeline E-commerce - diário 6h"]
-            ING["Notebook ingestao_bronze"]
-
-            subgraph pipeline["Lakeflow Pipeline ecommerce_etl - serverless"]
-                subgraph silver["silver - PySpark + expectations"]
-                    S1[("produtos, clientes, preco_competidores, vendas")]
-                end
-                subgraph gold["gold - SQL comentado"]
-                    G1[("vendas_temporais, vendas_produtos, vendas_detalhadas")]
-                    G2[("clientes_segmentacao")]
-                    G3[("precos_competitividade")]
-                    G4[("qualidade_dados")]
-                end
-            end
-
-            TST["Notebook testes_qualidade - 22 testes"]
-        end
-
-        subgraph bronze["bronze"]
-            B1[("vendas, produtos, clientes, preco_competidores")]
-            B2[("estados_ibge")]
-        end
-
-        WH["SQL Warehouse Serverless Starter"]
+    subgraph ingestao["⚙️ Ingestão · tarefa 1 do Job"]
+        JOB(["`⏰ **Lakeflow Job**
+todo dia às 6h`"])
+        ING["`📓 **Notebook de ingestão**
+boto3 + pandas`"]
+        SEC["`🔑 **Secret scope**
+endpoint e chaves`"]
     end
 
-    subgraph consumo["Consumo"]
-        D1["Dashboard Comercial"]
-        D2["Dashboard de Customer Success"]
-        D3["Dashboard de Pricing"]
-        GEN["Genie space Diretoria E-commerce"]
+    subgraph bronze["🥉 Bronze · dado como chegou"]
+        BR["`**5 tabelas Delta**
+vendas · produtos · clientes
+preços de concorrentes · UFs do IBGE`"]
     end
 
-    DEV["Git + Asset Bundle + CLI"]
+    subgraph silver["🥈 Silver · tarefa 2 (pipeline)"]
+        SI["`**4 materialized views**
+PySpark + 19 expectations
+problemas marcados, nunca apagados`"]
+    end
 
-    SUP -->|boto3| ING
-    IBGE -->|requests| ING
-    SEC -.->|credenciais| ING
-    ING -->|overwrite| B1
-    ING -->|overwrite| B2
-    B1 -->|leitura batch| S1
-    B2 -->|região por UF| S1
-    S1 --> G1
-    S1 --> G2
-    S1 --> G3
-    S1 --> G4
-    G2 -->|segmento| G1
-    ING -->|passo 1 - depois| pipeline
-    pipeline -->|passo 2 - depois| TST
-    TST -.->|valida| gold
-    gold --> WH
-    WH --> D1
-    WH --> D2
-    WH --> D3
+    subgraph gold["🥇 Gold · tarefa 2 (pipeline)"]
+        direction TB
+        GO["`**6 materialized views**
+vendas · clientes · preços
+placar de qualidade`"]
+        TST["`✅ **22 testes**
+tarefa 3 do Job`"]
+    end
+
+    subgraph consumo["📊 Consumo"]
+        direction TB
+        WH["`⚡ **SQL Warehouse**
+serverless`"]
+        DASH["`📈 **3 dashboards**
+Comercial · CS · Pricing`"]
+        GEN["`🧞 **Genie**
+perguntas em português`"]
+    end
+
+    DIR(["`👔 **Diretoria**
+Comercial · CS · Pricing`"])
+
+    SUP --> ING
+    IBGE --> ING
+    SEC -.-> ING
+    JOB -.-> ING
+    ING --> BR
+    BR --> SI
+    SI --> GO
+    GO -.-> TST
+    GO --> WH
+    WH --> DASH
     WH --> GEN
-    D1 -.->|Ask Genie| GEN
-    D2 -.->|Ask Genie| GEN
-    D3 -.->|Ask Genie| GEN
-    DEV -.->|bundle deploy| job
-    DEV -.->|bundle deploy| consumo
+    DASH -.->|Ask Genie| GEN
+    DASH --> DIR
+    GEN --> DIR
+
+    classDef fonte fill:#F1F3F5,stroke:#868E96,color:#343A40
+    classDef processo fill:#E7F5FF,stroke:#1C7ED6,color:#1864AB
+    classDef bronzeN fill:#FFE8CC,stroke:#D9480F,color:#862E0A
+    classDef silverN fill:#E9ECEF,stroke:#495057,color:#212529
+    classDef goldN fill:#FFF3BF,stroke:#E67700,color:#7A4B00
+    classDef teste fill:#EBFBEE,stroke:#2F9E44,color:#2B8A3E
+    classDef consumoN fill:#F3F0FF,stroke:#7048E8,color:#5F3DC4
+    classDef pessoa fill:#FFF0F6,stroke:#C2255C,color:#A61E4D
+
+    class SUP,IBGE fonte
+    class JOB,ING,SEC processo
+    class BR bronzeN
+    class SI silverN
+    class GO goldN
+    class TST teste
+    class WH,DASH,GEN consumoN
+    class DIR pessoa
+
+    style fontes fill:#F8F9FA,stroke:#ADB5BD
+    style ingestao fill:#F4FAFF,stroke:#74C0FC
+    style bronze fill:#FFF4E6,stroke:#FFA94D
+    style silver fill:#F8F9FA,stroke:#868E96
+    style gold fill:#FFF9DB,stroke:#FCC419
+    style consumo fill:#F8F7FF,stroke:#B197FC
 ```
 
 ---
 
 ## 4. Componentes e conexões (para desenhar à mão)
+
+Lista completa, com um nível de detalhe maior que o dos diagramas (por exemplo, as golds separadas). Os IDs são desta lista.
 
 **Componentes**
 

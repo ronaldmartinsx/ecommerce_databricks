@@ -22,22 +22,15 @@ Antes, cada resposta dependia de alguém baixar arquivos, escrever SQL solto e l
 
 ## Arquitetura
 
-```mermaid
-flowchart LR
-    SUP["Supabase Storage (S3)"] --> ING
-    IBGE["API do IBGE"] --> ING
-    SEC["Secret scope"] -.-> ING
-    subgraph job["Job diário - serverless"]
-        ING["Ingestão"] --> BR[("bronze")]
-        BR --> SI[("silver - PySpark + expectations")]
-        SI --> GO[("gold - SQL comentado")]
-        GO -.-> TST["22 testes"]
-    end
-    GO --> WH["SQL warehouse"]
-    WH --> DASH["3 dashboards AI/BI"]
-    WH --> GEN["Genie space"]
-    DASH -.->|Ask Genie| GEN
-```
+**Em linguagem de negócio:** do dado da loja à resposta para a diretoria.
+
+![Como os dados viram resposta para a diretoria: coleta, organização, conferência, painéis e assistente de IA](docs/diagramas/arquitetura_negocio.png)
+
+**A visão técnica:** as camadas, os componentes do Databricks e o que orquestra cada etapa.
+
+![Arquitetura técnica: Supabase e IBGE, ingestão, bronze, silver, gold, SQL warehouse, dashboards e Genie, com Lakeflow Job, Unity Catalog e Asset Bundle](docs/diagramas/arquitetura_tecnica.png)
+
+Os dois diagramas são editáveis no Excalidraw, com os ícones oficiais do Databricks: veja [docs/diagramas/](docs/diagramas/).
 
 | Camada | O que guarda | Como |
 |---|---|---|
@@ -144,6 +137,7 @@ databricks bundle summary -t dev -p <perfil>    # links do Job, dashboards e Gen
 ├── docs/
 │   ├── ARQUITETURA.md         ← componentes, fluxo, diagrama, ADRs, stack
 │   ├── GUIA_DE_ESTUDO.md      ← cada camada explicada, com ponte para Microsoft Fabric / Power BI
+│   ├── diagramas/             ← arquitetura técnica e de negócio (.excalidraw, .png, Mermaid)
 │   └── img/                   ← prints dos dashboards, do Genie, do pipeline e do Job
 ├── ecommerce/                 ← o Databricks Asset Bundle (ver ecommerce/README.md)
 │   ├── databricks.yml
