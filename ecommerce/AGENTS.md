@@ -115,6 +115,9 @@ Se algum número mudar sem que a bronze tenha mudado, investigue antes de corrig
   Canais exibidos como "E-commerce" e "Loja física". Dinheiro em R$ (`currencyCode: BRL`).
 - Layout de leitura rápida: título (com filtros ao lado), uma linha de KPIs, gráficos e uma tabela de
   detalhe para agir.
+- Cards de KPI (`counter`) mostram o total do período filtrado: NÃO use a codificação `period` (nem um
+  campo de data na consulta do card). Com ela o card vira KPI de tendência e exibe o valor do último
+  dia. Confira o KPI no dashboard renderizado, não só o SQL do dataset.
 - Regras que nenhum gráfico pode quebrar:
   - Ticket médio = receita total ÷ número de vendas, nunca média de médias: `SUM(receita) /
     SUM(total_vendas)` em vendas_temporais, `COUNT(*)` em vendas_detalhadas, `SUM(total_compras)` em

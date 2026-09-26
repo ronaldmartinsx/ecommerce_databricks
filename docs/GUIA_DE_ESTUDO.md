@@ -335,6 +335,7 @@ Arquivos: `ecommerce/src/dashboards/<nome>.lvdash.json` e `ecommerce/resources/<
 | `warehouse_id` por *lookup* do nome "Serverless Starter Warehouse" | O ID muda entre workspaces; o nome não |
 | Top 10 num dataset próprio, com parâmetros `:periodo` e `:canal` ligados aos mesmos filtros | O top 10 precisa agregar **antes** do `LIMIT`; um filtro normal agiria depois |
 | Canal exibido como "E-commerce" e "Loja física"; "(UTC)" no eixo e no filtro | Leitura do diretor e honestidade sobre o fuso |
+| Cards de KPI sem a codificação `period` | Com `period`, o card vira um KPI de tendência e mostra o valor do **último dia** com um minigráfico. Os cards do Dashboard Comercial exibiam R$ 28,2 mil (11/01) em vez de R$ 974.077,28 até a revisão [V] |
 | Botão **Ask Genie** apontando para o space `Diretoria E-commerce` | Do gráfico para a pergunta que o gráfico não previu. O ID do space está fixo no JSON (`overrideId`) [V]: em prod precisa ser trocado pelo id do space de prod |
 
 **≈ Power BI.** Um dashboard AI/BI ≈ um relatório do Power BI em **DirectQuery** contra um SQL endpoint: cada widget dispara SQL no warehouse. **Não é equivalente** em modelagem: não há modelo semântico, relacionamento nem DAX. As medidas são expressões SQL no widget. Os parâmetros ligados a filtros lembram os **dynamic M query parameters** do DirectQuery.
@@ -558,7 +559,7 @@ Linha do tempo [V, pelos timestamps do workspace]: rascunho de ingestão em 22/0
 | Esqueleto completo do bundle (pipeline, job, 3 dashboards, Genie) | O JSON de um dashboard tem cerca de 750 a 1.000 linhas [V]; ninguém escreve isso à mão com prazer |
 | Comentários de todas as colunas gold | Tarefa longa e repetitiva, que é exatamente o que o Genie precisa |
 | Exploração dos dados antes de codar | Os prompts exigem mostrar os números antes de escrever código |
-| Loop de teste do Genie | 48 conversas de teste (12 perguntas × 4 rodadas) em poucos minutos, pela API [V] |
+| Loop de teste do Genie | 6 rodadas pela API de conversa, com 88 perguntas no total (12 por rodada nas 4 primeiras, 20 nas duas últimas), cada rodada em poucos minutos [V] |
 | Consistência | As mesmas regras (DECIMAL, marcar e não apagar, um arquivo por tabela) aplicadas em todos os arquivos |
 
 ### Onde errou [V, salvo indicação]
@@ -573,6 +574,7 @@ Linha do tempo [V, pelos timestamps do workspace]: rascunho de ingestão em 22/0
 8. [I] **Notebook de ingestão sem os imports de `pandas` e `io`.** Esse ponto é humano, não da IA: o notebook foi montado à mão no workspace.
 9. **Genie recalculando em vez de consultar** (rodada 5): 183 produtos com "marca diferente" no lugar de 12.
 10. **Ordem de deploy:** a revisão incluiu uma tabela nova no Genie antes de ela existir, e o deploy do space falhou. O resto do deploy foi aplicado; bastou rodar o Job e implantar de novo.
+11. **KPI que mostrava o dia errado:** os 4 cards do Dashboard Comercial foram gerados como KPI de tendência (`period: daily(data)`) e exibiam o valor de 11/01, e não o total do período. A conferência dos KPIs na construção comparou o **SQL** do dataset com a gold, e o SQL estava certo; o erro estava na forma como o card agrega. Quem pegou foi a revisão humana do print para o README. Lição: conferir o número **renderizado**, não só a consulta.
 
 A revisão também **pegou erros antes do deploy**: o `bundle validate -o json` mostrou que um `pause_status: UNPAUSED` explícito faria o Job de dev rodar todo dia, e foi removido.
 
